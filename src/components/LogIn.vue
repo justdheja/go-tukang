@@ -3,6 +3,18 @@
     <div class="card">
       <div class="card-content">
         <img width="100" src="@/assets/logo_only.png" alt="">
+        <b-field label="Log In as">
+          <b-radio v-model="role"
+              name="name"
+              native-value="user">
+              User
+          </b-radio>
+          <b-radio v-model="role"
+              name="name"
+              native-value="tukang">
+              Tukang
+          </b-radio>
+        </b-field>
         <b-field label="Username">
             <b-input v-model="username"></b-input>
         </b-field>
@@ -24,15 +36,22 @@ export default {
   data() {
     return {
       username: '',
-      password: ''
+      password: '',
+      role: 'user'
     }
   },
 
   methods: {
     logIn() {
-      this.$store.commit('loginUser', {
-        username: this.username
-      })
+      if(this.role === 'tukang') {
+        this.$store.commit('loginTukang', {
+          username: this.username
+        })
+      } else {
+        this.$store.commit('loginUser', {
+          username: this.username
+        })
+      }
     }
   },
 }
@@ -44,6 +63,10 @@ export default {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+}
+
+.check::before {
+  background: green;
 }
 
 img {

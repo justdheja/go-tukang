@@ -93,8 +93,10 @@
 										</div>
 									</div>
 								</div>
+
 								<div class="column is-one-third review">
 									<h1 class="subtitle">Reviews</h1>
+									{{ reviews }}
 									<div v-for="i in 8" :key="i" class="card my-2">
 										<div class="card-content">
 											<div class="columns">
@@ -131,6 +133,7 @@
 <script>
 import EventBus from '@/eventBus';
 import Axios from 'axios'
+import FormData from 'form-data'
 
 export default {
 	props: {
@@ -146,7 +149,8 @@ export default {
       provinsi: null,
       kota: null,
       serviceType: [],
-      province: [],
+			province: [],
+			reviews: [],
       city: []
 		};
   },
@@ -170,20 +174,22 @@ export default {
         })
     },
     async getTukangReviews() {
-      let data = JSON.parse(`
-        {
-          "usernameTk": "Panjulina"
-        }
-      `)
-      console.log(data)
-      let config = {
-        method: 'get',
-        url: 'https://go-tukang.herokuapp.com/review/find',
-        data : data
-      }
-      await Axios(config)
-        .then((res) => {
-          console.log(res)
+      // let data = JSON.parse(`
+      //   {
+      //     "usernameTk": "Jono"
+      //   }
+			// `)
+			let dataBody = new FormData()
+			dataBody.append("usernameTk", "Panjulina")
+      // let config = {
+      //   method: 'get',
+      //   url: 'https://go-tukang.herokuapp.com/review/find',
+      //   data : data
+      // }
+      await this.$http.get('https://go-tukang.herokuapp.com/review/find', dataBody)
+        .then((response) => {
+					console.log(response)
+					this.reviews = response.data.reviews
         })
         .catch((err) => {
           console.log(err)
@@ -199,15 +205,15 @@ export default {
 
 	async created() {
 		await this.$http
-			.get('http://dev.farizdotid.com/api/daerahindonesia/provinsi')
+			.get('https://dev.farizdotid.com/api/daerahindonesia/provinsi')
 			.then((response) => {
 				this.province = response.data.provinsi;
 			})
 			.catch((err) => {
 				console.log(err);
       });
-      
-    this.getTukangReviews()
+			
+		this.getTukangReviews()
 	},
 };
 </script>

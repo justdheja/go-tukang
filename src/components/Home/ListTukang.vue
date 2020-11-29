@@ -20,8 +20,8 @@
 				</div>
 				<div class="column">
 					<h1 class="title">Handyman</h1>
-          {{ listTukang }}
-					<div class="card-container">
+					<the-loader v-if="isLoading"></the-loader>
+					<div v-else class="card-container">
 						<div @click="openBook(tukang)" v-for="(tukang, index) in listTukang" :key="index" class="card">
 							<div class="card-content">
 								<i class="fas fa-user-circle my-3"></i> <br />
@@ -49,7 +49,8 @@ export default {
     return {
       showModal: false,
       listTukang: [],
-      selectedTukang: null,
+			selectedTukang: null,
+			isLoading: false,
       radio: ''
     }
   },
@@ -65,10 +66,12 @@ export default {
       this.selectedTukang = item
     },
     async getTukangList() {
+			this.isLoading = true
       await this.$http.get('https://go-tukang.herokuapp.com/tukang/list')
         .then((response) => {
           console.log(response.data)
-          this.listTukang = response.data.list
+					this.listTukang = response.data.list
+					this.isLoading = false
         })
         .catch((err) => {
           console.log(err)
