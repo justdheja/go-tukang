@@ -1,17 +1,29 @@
 <template>
   <div id="app">
-    <the-navbar></the-navbar>
-    <router-view/>
+    <log-in v-if="!isLoggedin"></log-in>
+    <div v-else>
+      <the-navbar></the-navbar>
+      <router-view/>
+    </div>
   </div>
 </template>
 
 <script>
 import TheNavbar from './components/TheNavbar'
+import LogIn from './components/LogIn'
 
 export default {
   components: {
-    TheNavbar
-  }
+    TheNavbar,
+    LogIn
+  },
+
+  computed: {
+    isLoggedin() {
+      return this.$store.state.isLogin
+    }
+  },
+
 }
 </script>
 

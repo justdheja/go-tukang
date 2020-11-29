@@ -20,19 +20,20 @@
 				</div>
 				<div class="column">
 					<h1 class="title">Handyman</h1>
+          {{ listTukang }}
 					<div class="card-container">
-						<div @click="openBook()" v-for="i in 5" :key="i" class="card">
+						<div @click="openBook(tukang)" v-for="(tukang, index) in listTukang" :key="index" class="card">
 							<div class="card-content">
 								<i class="fas fa-user-circle my-3"></i> <br />
-								Username <br />
-								<i v-for="x in 5" :key="x" class="fas fa-star my-3"></i>
+								{{ tukang.username }} <br />
+								{{ tukang.review }} <i class="fas fa-star my-3"></i>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-    <modal-book :show-modal="showModal"></modal-book>
+    <modal-book :show-modal="showModal" :data="selectedTukang"></modal-book>
 	</div>
 </template>
 
@@ -47,6 +48,8 @@ export default {
   data() {
     return {
       showModal: false,
+      listTukang: [],
+      selectedTukang: null,
       radio: ''
     }
   },
@@ -54,10 +57,22 @@ export default {
     EventBus.$on('close-book-modal', () => {
       this.showModal = false
     })
+    this.getTukangList()
   },
   methods: {
-    openBook() {
+    openBook(item) {
       this.showModal = !this.showModal
+      this.selectedTukang = item
+    },
+    async getTukangList() {
+      await this.$http.get('https://go-tukang.herokuapp.com/tukang/list')
+        .then((response) => {
+          console.log(response.data)
+          this.listTukang = response.data.list
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     }
   },
 }
