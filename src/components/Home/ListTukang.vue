@@ -26,6 +26,7 @@
 							<div class="card-content">
 								<i class="fas fa-user-circle my-3"></i> <br />
 								{{ tukang.username }} <br />
+								Skill: {{ tukang.specialization }} <br />
 								{{ tukang.review }} <i class="fas fa-star my-3"></i>
 							</div>
 						</div>

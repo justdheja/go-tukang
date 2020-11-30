@@ -210,7 +210,7 @@ export default {
 				{
 					"usernameUs": "${this.username}",
 					"usernameTk": "${this.data.username}",
-					"location": "${this.detailAlamat + ', ' + this.kota + ', ' + this.provinsi}"
+					"location": "${this.detailAlamat + ', ' + this.kota.nama + ', ' + this.provinsi.nama}"
 				}
 			`)
 
