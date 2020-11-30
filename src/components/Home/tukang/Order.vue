@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="subtitle has-text-centered" v-else>
-      <img src="@/assets/empty.png" alt="">
+      <img width="200" src="@/assets/empty.svg" alt="">
     </div>
     <button class="button is-warning" @click.prevent="getOrder">Refresh</button>
   </div>

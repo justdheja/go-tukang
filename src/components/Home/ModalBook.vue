@@ -115,7 +115,7 @@
 										</div>
 									</div>
 									<div v-else class="subtitle has-text-centered">
-										<img src="@/assets/empty.png" alt="">
+										<img src="@/assets/empty.svg" alt="">
 									</div>
 								</div>
 							</div>
