@@ -1,6 +1,6 @@
 <template>
   <div class="my-6 py-5">
-    <h1 class="subtitle">Received Order</h1>
+    <h1 class="subtitle">Received Order</h1> <button class="button is-warning" @click.prevent="getOrder">Refresh</button>
     <div v-for="item in orders" :key="item.username" class="card mb-3">
       <div class="card-content">
         <div class="heading">Order by: {{ item.usernameUs }}</div>

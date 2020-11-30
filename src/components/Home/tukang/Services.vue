@@ -72,11 +72,6 @@ export default {
   methods: {
     getUser() {
       this.isLoading = true
-      let data = JSON.parse(`
-        {
-          "username": "Jono"
-        }
-      `)
 
       let config = {
         method: 'get',
@@ -102,7 +97,7 @@ export default {
         {
           "username": "${this.username}",
           "specialization": "${this.inputservice}",
-          "location": "Yogyakarta",
+          "location": "Yogyakarta"
         }
       `)
 
