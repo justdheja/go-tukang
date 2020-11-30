@@ -1,12 +1,15 @@
 <template>
   <div class="my-6 py-5">
-    <h1 class="subtitle">Received Order</h1> <button class="button is-warning" @click.prevent="getOrder">Refresh</button>
-    <div v-for="item in orders" :key="item.username" class="card mb-3">
+    <h1 class="subtitle">Received Order</h1>
+    <the-loader v-if="isLoading"></the-loader>
+    <div v-else-if="orders.length > 0" v-for="item in orders" :key="item.username" class="card mb-3">
       <div class="card-content">
         <div class="heading">Order by: {{ item.usernameUs }}</div>
         <div class="subheading"><i class="fas fa-map-marker-alt"></i> {{ item.location }}</div>
       </div>
     </div>
+    <h1 class="subtitle" v-else>There's no received order</h1>
+    <button class="button is-warning" @click.prevent="getOrder">Refresh</button>
   </div>
 </template>
 
@@ -14,7 +17,8 @@
 export default {
   data() {
     return {
-      orders: []
+      orders: [],
+      isLoading: false
     }
   },
 
@@ -30,6 +34,7 @@ export default {
   
   methods: {
     async getOrder(){
+      this.isLoading = true
       let data = JSON.parse(`
         {
           "usernameTk": "${this.username}"
@@ -45,6 +50,7 @@ export default {
         .then((response) => {
           console.log(response.data)
           this.orders = response.data.orders
+          this.isLoading = false
         })
         .catch((error) => {
           console.log(error)
