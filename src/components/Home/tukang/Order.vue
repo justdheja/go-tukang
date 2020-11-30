@@ -8,7 +8,9 @@
         <div class="subheading"><i class="fas fa-map-marker-alt"></i> {{ item.location }}</div>
       </div>
     </div>
-    <h1 class="subtitle" v-else>There's no received order</h1>
+    <div class="subtitle has-text-centered" v-else>
+      <img src="@/assets/empty.png" alt="">
+    </div>
     <button class="button is-warning" @click.prevent="getOrder">Refresh</button>
   </div>
 </template>

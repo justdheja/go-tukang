@@ -94,7 +94,7 @@
 								<div class="column is-one-third review">
 									<h1 class="subtitle">Reviews</h1>
 									<the-loader v-if="isLoadReview"></the-loader>
-									<div v-for="item in reviews" :key="item.star" class="card my-2">
+									<div v-else-if="reviews.length > 0" v-for="item in reviews" :key="item.star" class="card my-2">
 										<div class="card-content">
 											<div class="columns">
 												<div class="column is-one-fifth">
@@ -113,6 +113,9 @@
 												{{ item.comment }}
 											</p>
 										</div>
+									</div>
+									<div v-else class="subtitle has-text-centered">
+										<img src="@/assets/empty.png" alt="">
 									</div>
 								</div>
 							</div>
@@ -196,7 +199,7 @@ export default {
       }
       await this.$http(config)
         .then((response) => {
-					console.log(response)
+					console.log(response.data.reviews)
 					this.reviews = response.data.reviews
 					this.isLoadReview = false
         })
