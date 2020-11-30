@@ -9,11 +9,21 @@
 
 		<template slot="end">
 			<b-navbar-item tag="router-link" :to="{ path: '/' }">
-				Home
+				<i>Welcome, {{ username }}</i>
 			</b-navbar-item>
 		</template>
 	</b-navbar>
 </template>
+
+<script>
+export default {
+	computed: {
+		username(){
+			return this.$store.state.username
+		}
+	},
+}
+</script>
 
 <style lang="scss" scoped>
 .navbar {

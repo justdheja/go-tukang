@@ -33,7 +33,7 @@
 				</div>
 			</div>
 		</div>
-    <modal-book :show-modal="showModal" :data="selectedTukang"></modal-book>
+    <modal-book v-if="modalReady" :show-modal="showModal" :data="selectedTukang"></modal-book>
 	</div>
 </template>
 
@@ -51,7 +51,8 @@ export default {
       listTukang: [],
 			selectedTukang: null,
 			isLoading: false,
-      radio: ''
+			radio: '',
+			modalReady: false
     }
   },
   created() {
@@ -62,8 +63,9 @@ export default {
   },
   methods: {
     openBook(item) {
-      this.showModal = !this.showModal
       this.selectedTukang = item
+			this.modalReady = true
+      this.showModal = !this.showModal
     },
     async getTukangList() {
 			this.isLoading = true
@@ -82,8 +84,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.list-tukang {
-}
 
 .card-container {
 	.card {

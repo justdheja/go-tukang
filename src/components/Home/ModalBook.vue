@@ -18,9 +18,11 @@
 									<i class="fas fa-user-circle"></i>
 								</div>
 								<div class="column">
-                  {{ data }}
 									<div class="title">{{data.username}}</div>
 									<div class="subtitle">Handyman</div>
+									<p>
+										<i class="fas fa-map-marker-alt"></i> {{ data.location }}
+									</p>
 									<i v-for="x in 5" :key="x" class="fas fa-star my-3"></i>
 								</div>
 							</div>
@@ -39,22 +41,7 @@
 									<strong>Book Now</strong>
 								</div>
 
-								<div class="panel-block">
-									<b-field label="Service">
-										<div class="field">
-											<b-checkbox v-model="serviceType" native-value="Silver">
-												Silver
-											</b-checkbox>
-										</div>
-                    <div class="field">
-											<b-checkbox v-model="serviceType" native-value="Flint">
-												Flint
-											</b-checkbox>
-                    </div>
-									</b-field>
-                  
-                  <br>
-									
+								<div class="panel-block">									
                   <b-field label="address">
 										<b-select placeholder="Select Province" v-model="provinsi">
 											<option
@@ -76,8 +63,18 @@
 											>
 												{{ option.nama }}
 											</option>
-										</b-select>
+										</b-select> <br>
 									</b-field>
+									<b-field label="">
+										<b-input v-model="detailAlamat"></b-input>
+									</b-field>
+									<b-field label="Select a date">
+											<b-datepicker
+													placeholder="Click to select..."
+													:min-date="minDate">
+											</b-datepicker>
+									</b-field>
+									<button class="button is-success" @click.prevent="addOrder">Book {{ data.username }}</button>
 								</div>
 							</b-collapse>
 
@@ -86,9 +83,9 @@
 								<div class="column">
 									<h1 class="subtitle">Services</h1>
 									<div class="card-container">
-										<div v-for="i in 7" :key="i" class="card mr-5">
+										<div  class="card mr-5">
 											<div class="card-content">
-												<p>Hello</p>
+												<p>{{data.specialization}}</p>
 											</div>
 										</div>
 									</div>
@@ -96,25 +93,24 @@
 
 								<div class="column is-one-third review">
 									<h1 class="subtitle">Reviews</h1>
-									{{ reviews }}
-									<div v-for="i in 8" :key="i" class="card my-2">
+									<the-loader v-if="isLoadReview"></the-loader>
+									<div v-for="item in reviews" :key="item.star" class="card my-2">
 										<div class="card-content">
 											<div class="columns">
 												<div class="column is-one-fifth">
 													<i class="fas fa-user-circle"></i>
 												</div>
 												<div class="column">
-													Ignas <br />
+													{{item.usernameUs}} <br />
 													<i
-														v-for="x in 5"
+														v-for="x in item.star"
 														:key="x"
 														class="fas fa-star my-3"
 													></i>
 												</div>
 											</div>
-											<p class="content">
-												Lorem ipsum dolor sit amet consectetur adipisicing elit.
-												Modi aliquid natus voluptate inventore incidunt
+											<p v-if="item.comment.length > 0" class="content">
+												{{ item.comment }}
 											</p>
 										</div>
 									</div>
@@ -142,18 +138,29 @@ export default {
   },
   
 	data() {
+		const today = new Date()
 		return {
 			showOrderModal: false,
 			isOpen: false,
       showSelectKota: false,
       provinsi: null,
-      kota: null,
+			kota: null,
+			detailAlamat: '',
       serviceType: [],
 			province: [],
 			reviews: [],
-      city: []
+			city: [],
+			isLoadReview: false,
+			date: new Date(),
+			minDate: new Date(today.getFullYear(), today.getMonth(), today.getDate())
 		};
-  },
+	},
+	
+	computed: {
+		username() {
+			return this.$store.state.username
+		}
+	},
   
 	methods: {
 		close() {
@@ -174,27 +181,58 @@ export default {
         })
     },
     async getTukangReviews() {
-      // let data = JSON.parse(`
-      //   {
-      //     "usernameTk": "Jono"
-      //   }
-			// `)
-			let dataBody = new FormData()
-			dataBody.append("usernameTk", "Panjulina")
-      // let config = {
-      //   method: 'get',
-      //   url: 'https://go-tukang.herokuapp.com/review/find',
-      //   data : data
-      // }
-      await this.$http.get('https://go-tukang.herokuapp.com/review/find', dataBody)
+			this.isLoadReview = true
+      let data = JSON.parse(`
+        {
+          "usernameTk": "${this.data.username}"
+        }
+			`)
+			// let dataBody = new FormData()
+			// dataBody.append("usernameTk", "Panjulina")
+      let config = {
+        method: 'post',
+        url: 'https://go-tukang.herokuapp.com/review/find',
+        data : data
+      }
+      await this.$http(config)
         .then((response) => {
 					console.log(response)
 					this.reviews = response.data.reviews
+					this.isLoadReview = false
         })
         .catch((err) => {
           console.log(err)
         })
-    }
+		},
+		
+		async addOrder() {
+			let data = JSON.parse(`
+				{
+					"usernameUs": "${this.username}",
+					"usernameTk": "${this.data.username}",
+					"location": "${this.detailAlamat + ', ' + this.kota + ', ' + this.provinsi}"
+				}
+			`)
+
+			let config = {
+				method: 'post',
+        url: 'https://go-tukang.herokuapp.com/order/add',
+        data : data
+			}
+
+			await this.$http(config)
+        .then((response) => {
+					console.log(response.data)
+					this.$buefy.toast.open({
+							message: 'Order Success',
+							type: 'is-success'
+					})
+					this.close()
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+		}
 	},
 
 	watch: {
@@ -219,8 +257,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.modal-book {
-}
 .fa-user-circle {
 	font-size: 120px;
 }
@@ -244,6 +280,12 @@ export default {
 	.card {
 		display: inline-block;
 	}
+}
+.panel-block {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
 }
 .checkbox  {
   display: inline;
