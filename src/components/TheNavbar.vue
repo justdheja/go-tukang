@@ -11,6 +11,9 @@
 			<b-navbar-item tag="router-link" :to="{ path: '/' }">
 				<i>Welcome, {{ username }}</i>
 			</b-navbar-item>
+			<b-navbar-item tag="button" @click="logOut" class="button is-success">
+				Log Out
+			</b-navbar-item>
 		</template>
 	</b-navbar>
 </template>
@@ -20,6 +23,12 @@ export default {
 	computed: {
 		username(){
 			return this.$store.state.username
+		}
+	},
+
+	methods: {
+		logOut() {
+			window.location.reload()
 		}
 	},
 }
@@ -33,9 +42,17 @@ export default {
 
 .navbar-item,
 .navbar-link {
+	display: flex;
+	align-items: center;
 	&:hover {
 		background: transparent;
 		color: #000;
 	}
+}
+
+button {
+	border-radius: 50px;
+	display: block;
+	margin: auto 2px;
 }
 </style>

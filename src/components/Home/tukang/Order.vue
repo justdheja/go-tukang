@@ -16,6 +16,8 @@
 </template>
 
 <script>
+import EventBus from '@/eventBus'
+
 export default {
   data() {
     return {
@@ -32,6 +34,9 @@ export default {
 
   created() {
     this.getOrder()
+    EventBus.$on('tukang-add-service', () => {
+      this.getOrder()
+    })
   },
   
   methods: {
