@@ -7,7 +7,9 @@
     <div v-else-if="services.length > 0" class="card-container">
       <div v-for="(item, i) in services" :key="i" class="card">
         <div class="card-content">
-          {{item.specialization}}
+          {{item.specialization}} <br>
+          <button v-if="showRestButton" class="button is-success" @click="toggleStatus">Set to Rest Mode</button>
+          <button v-else class="button is-success" @click="toggleStatus">Set Back to On</button>
         </div>
       </div>
     </div>
@@ -27,7 +29,7 @@ export default {
       services: null,
       isLoading: false,
       showModal: false,
-      
+      showRestButton: true
     }
   },
 
@@ -64,6 +66,41 @@ export default {
 
           this.services = array.filter(item => item.username === this.username)
           console.log(this.services)
+          this.isLoading = false
+          if(this.services.length > 0) {
+            EventBus.$emit('service-available')
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
+
+    toggleStatus() {
+      this.isLoading = true
+      let data = JSON.parse(`
+      {
+        "usernameTk": "${this.username}",
+        "status": "Tukang Sedang Istirahat"
+      }
+      `)
+      let data2 = JSON.parse(`
+      {
+        "usernameTk": "${this.username}",
+        "status": "Tukang On"
+      }
+      `)
+
+      let config = {
+        method: 'post',
+        url: 'https://backend-pubsub-gotukang.herokuapp.com/publish/status',
+        data: this.showRestButton? data : data2
+      }
+
+      this.$http(config)
+        .then((response) => {
+          console.log(response.data)
+          this.showRestButton = false
           this.isLoading = false
         })
         .catch((error) => {

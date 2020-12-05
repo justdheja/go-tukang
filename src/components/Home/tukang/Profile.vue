@@ -12,6 +12,8 @@
             </strong>
           </h2>
           Handyman
+          <br>
+          <!-- <button v-if="serviceAvailable" class="button is-success">Set Status</button> -->
         </div>
       </div>
     </div>
@@ -19,7 +21,19 @@
 </template>
 
 <script>
+import EventBus from '@/eventBus'
+
 export default {
+  data() {
+    return {
+      serviceAvailable: ''
+    }
+  },
+  created() {
+    EventBus.$on('service-available', () => {
+      this.serviceAvailable = true
+    })
+  },
   computed: {
     username() {
       return this.$store.state.username
